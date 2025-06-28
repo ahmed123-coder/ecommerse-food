@@ -7,7 +7,7 @@ function InStoreOrdersAdmin() {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/orders/in-store");
+      const res = await axios.get("https://khmiri-resto.onrender.com/api/orders/in-store");
       setOrders(res.data);
     } catch (err) {
       alert("فشل في تحميل الطلبات");
@@ -20,7 +20,7 @@ function InStoreOrdersAdmin() {
 
   const markAsDelivered = async (id) => {
     try {
-      await axios.put(`http://localhost:3000/api/order/${id}`, {
+      await axios.put(`https://khmiri-resto.onrender.com/api/order/${id}`, {
         status: "delivered",
       });
       fetchOrders();
@@ -32,7 +32,7 @@ function InStoreOrdersAdmin() {
   const deleteOrder = async (id) => {
     if (!window.confirm("هل أنت متأكد من حذف الطلب؟")) return;
     try {
-      await axios.delete(`http://localhost:3000/api/order/${id}`);
+      await axios.delete(`https://khmiri-resto.onrender.com/api/order/${id}`);
       fetchOrders();
     } catch (err) {
       alert("فشل في حذف الطلب");
