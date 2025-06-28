@@ -11,7 +11,7 @@ const Logout = () => {
     localStorage.removeItem("user");
 
     // توجيه المستخدم إلى صفحة تسجيل الدخول أو الرئيسية
-    navigate("/login"); // أو "/"
+    navigate("https://khmiri-resto.onrender.com/api/users/login"); // أو "/"
   }, [navigate]);
 
   return (
