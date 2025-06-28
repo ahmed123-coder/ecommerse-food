@@ -23,11 +23,11 @@ function HomePage() {
   const filteredGroups = groups.filter(g => g.name.toLowerCase().includes(searchTerm));
 
   useEffect(() => {
-    axios.get("http://localhost:3000/api/products").then((res) => {
+    axios.get("https://khmiri-resto.onrender.com/api/products").then((res) => {
       setProducts(res.data);
     });
 
-    axios.get("http://localhost:3000/api/groupproducts").then((res) => {
+    axios.get("https://khmiri-resto.onrender.com/api/groupproducts").then((res) => {
       setGroups(res.data);
     });
     const storedCart = JSON.parse(localStorage.getItem("guestCart")) || {
