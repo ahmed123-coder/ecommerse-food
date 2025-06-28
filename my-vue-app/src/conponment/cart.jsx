@@ -19,11 +19,11 @@ const Cart = ({ isOpen, onClose, cartItems, darkMode }) => {
       const validGroups = cartItems.groupProducts.filter(item => item.groupId?.trim());
 
       const productPromises = validProducts.map(item =>
-        axios.get(`http://localhost:3000/api/products/${item.productId}`)
+        axios.get(`https://khmiri-resto.onrender.com/api/products/${item.productId}`)
       );
       
       const groupPromises = validGroups.map(item =>
-        axios.get(`http://localhost:3000/api/groupproducts/${item.groupId}`)
+        axios.get(`https://khmiri-resto.onrender.com/api/groupproducts/${item.groupId}`)
       );
 
       const [productsRes, groupsRes] = await Promise.all([
@@ -61,7 +61,7 @@ const Cart = ({ isOpen, onClose, cartItems, darkMode }) => {
 
       if (token) {
         await axios.put(
-          `http://localhost:3000/api/users/updateCart/${id}`,
+          `https://khmiri-resto.onrender.com/api/users/updateCart/${id}`,
           { type, quantity: newQuantity },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -94,7 +94,7 @@ const Cart = ({ isOpen, onClose, cartItems, darkMode }) => {
 
       if (token) {
         await axios.delete(
-          `http://localhost:3000/api/users/cart/${type}/${id}`,
+          `https://khmiri-resto.onrender.com/api/users/cart/${type}/${id}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
       } else {
@@ -150,7 +150,7 @@ const Cart = ({ isOpen, onClose, cartItems, darkMode }) => {
               {itemsDetails.products.map((item) => (
                 <div key={item._id} className="cart-item">
                   <img
-                    src={`http://localhost:3000/${item.image}`}
+                    src={`https://khmiri-resto.onrender.com/${item.image}`}
                     alt={item.name}
                     className="item-image"
                   />
@@ -184,7 +184,7 @@ const Cart = ({ isOpen, onClose, cartItems, darkMode }) => {
               {itemsDetails.groups.map((item) => (
                 <div key={item._id} className="cart-item">
                   <img
-                    src={`http://localhost:3000/${item.image}`}
+                    src={`https://khmiri-resto.onrender.com/${item.image}`}
                     alt={item.name}
                     className="item-image"
                   />
