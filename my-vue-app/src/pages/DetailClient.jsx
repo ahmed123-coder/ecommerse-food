@@ -30,7 +30,7 @@ function DetailClient() {
     if (token) {
       const fetchUser = async () => {
         try {
-          const response = await axios.get("https://khmiri-shop.onrender.com/api/users/me", {
+          const response = await axios.get("http://localhost:3000/api/users/me", {
             headers: { Authorization: `Bearer ${token}` },
           });
           setUser(response.data);
@@ -84,7 +84,7 @@ function DetailClient() {
         }));
       }
 
-      const responseOrder = await axios.post("https://khmiri-shop.onrender.com/api/orders", orderData, {
+      const responseOrder = await axios.post("http://localhost:3000/api/orders", orderData, {
         headers: { "Content-Type": "application/json" },
       });
 
@@ -93,7 +93,7 @@ function DetailClient() {
       const updatedFormData = { ...formdata, idorder: orderId };
       setFormdata(updatedFormData);
 
-      await axios.post("https://khmiri-shop.onrender.com/api/details", updatedFormData, {
+      await axios.post("http://localhost:3000/api/details", updatedFormData, {
         headers: { "Content-Type": "application/json" },
       });
 

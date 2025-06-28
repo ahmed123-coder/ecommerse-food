@@ -46,11 +46,11 @@ const Contact = () => {
             </li>
             <li>
               <i className="bi bi-telephone"></i>
-              <span>+1 (123) 456-7890</span>
+              <span>+216 21863971</span>
             </li>
             <li>
               <i className="bi bi-envelope"></i>
-              <span>support@myecommerce.com</span>
+              <span>hamoudkhmiri@gmail.com</span>
             </li>
           </ul>
 

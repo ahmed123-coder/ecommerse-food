@@ -70,7 +70,7 @@ router.get("/me", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { email, password, firstName, lastName, role } = req.body;
+  const { email, password, firstName, lastName } = req.body; // احذف role من هنا
 
   try {
     if (password.length < 8) {
@@ -83,12 +83,52 @@ router.post("/", async (req, res) => {
       password: hashedPassword,
       firstName,
       lastName,
-      role,
-      cart: { products: [], groupProducts: [] } // افتراضيًا
+      role: "customer", // اجبر الدور على customer فقط
+      cart: { products: [], groupProducts: [] }
     });
 
     await newUser.save();
     res.status(201).json({ message: "User registered successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "An error occurred" });
+  }
+});
+
+
+// create account only for admin
+router.post("/admin", async (req, res) => {
+    const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await User.findById(decoded.id);
+    if (!user || user.role !== "admin") {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    const { email, password, firstName, lastName, role } = req.body;
+
+    if (password.length < 8) {
+      return res.status(400).json({ message: "Password must be at least 8 characters long" });
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const newUser = new User({
+      email,
+      password: hashedPassword,
+      firstName,
+      lastName,
+      role,
+      cart: { products: [], groupProducts: [] }
+    });
+
+    await newUser.save();
+    res.status(201).json({ message: "Admin registered successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "An error occurred" });
@@ -139,7 +179,7 @@ router.delete("/:id", async (req, res)=>{
 // Update User by ID
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { firstName, lastName, email, password, cart } = req.body;
+  const { firstName, lastName, email, password, cart, role } = req.body;
 
   try {
     const token = req.headers.authorization?.split(" ")[1];
@@ -164,6 +204,7 @@ router.put("/:id", async (req, res) => {
             if (lastName) userput.lastName = lastName;
             if (email) userput.email = email;
             if (password) userput.password = password; // Consider hashing before saving
+            if (role) userput.role = role; // Update role if provided
       
             // Update cart if provided
             if (cart) {

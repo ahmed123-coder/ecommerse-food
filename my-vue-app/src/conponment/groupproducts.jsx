@@ -12,7 +12,7 @@ function Groups({onAddToCart, groups, darkMode}) {
 
   return (
     <div  className={`projects ${darkMode ? "dark-mode" : ""}`}>
-      <div className="container mt-5">
+      <div className="container">
         <h2 className="text-center title-div">group products</h2>
         <div className="row">
           {groups.filter(group => group.available).map((group) => (

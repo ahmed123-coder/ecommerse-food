@@ -15,6 +15,9 @@ import Services from "./pages/Services";
 import About from "./pages/About";
 import Admin from "./admin/pages/admin";
 import Logout from "./pages/logout";
+import InStoreOrdersAdmin from "./admin/pages/InStoreOrdersAdmin";
+import Store from "./pages/store";
+import Dashboard from "./admin/pages/Dashboard";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -34,12 +37,17 @@ function App() {
         <Route path="/logout" element={<Logout />} />
         <Route path="/register" element={<Register />} />
         <Route path="/admin" element={<Admin darkMode={darkMode}/>} />
+        <Route path="/store" element={<Store />} />
+
         {/* Nested Admin Routes */}
         <Route path="/admin/users" element={<User />} />
         <Route path="/admin/categories" element={<Category />} />
         <Route path="/admin/productsAdmin" element={<ProductsAdmin />} />
         <Route path="/admin/group-product" element={<AdminOrder />} />
         <Route path="/admin/ordersAdminPage" element={<OrdersAdminPage />} />
+        <Route path="/admin/instore-admin" element={<InStoreOrdersAdmin />} />
+        <Route path="/admin/statdashboard" element={<Dashboard/>} />
+        {/* Fallback route */}
       </Routes>
     </>
   );

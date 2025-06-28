@@ -19,7 +19,7 @@ const About = () => {
         <div className="about-section">
           <h2>Our Story</h2>
           <p>
-            Founded in 2020, My E-Commerce is dedicated to providing high-quality products and exceptional customer service. We believe in making online shopping easy, secure, and enjoyable for everyone.
+            Founded in 2025, My E-Commerce is dedicated to providing high-quality products and exceptional customer service. We believe in making online shopping easy, secure, and enjoyable for everyone.
           </p>
         </div>
 

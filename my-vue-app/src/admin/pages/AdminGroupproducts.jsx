@@ -24,7 +24,7 @@ const AdminOrder = () => {
 
   const fetchProductGroups = async () => {
   try {
-    const response = await axios.get("https://khmiri-shop.onrender.com/api/groupproducts");
+    const response = await axios.get("http://localhost:3000/api/groupproducts");
     setProductGroups(response.data);
   } catch (error) {
     console.error("Error fetching product groups:", error.response?.data || error.message);
@@ -35,7 +35,7 @@ const AdminOrder = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get("https://khmiri-shop.onrender.com/api/products");
+      const response = await axios.get("http://localhost:3000/api/products");
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -78,11 +78,11 @@ const AdminOrder = () => {
 
     try {
       if (editGroupProduct) {
-        await axios.put(`https://khmiri-shop.onrender.com/api/groupproducts/${editGroupProduct._id}`, data, {
+        await axios.put(`http://localhost:3000/api/groupproducts/${editGroupProduct._id}`, data, {
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
         });
       } else {
-        await axios.post("https://khmiri-shop.onrender.com/api/groupproducts", data, {
+        await axios.post("http://localhost:3000/api/groupproducts", data, {
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
         });
       }
@@ -107,7 +107,7 @@ const AdminOrder = () => {
 
   const deleteProductGroup = async (id) => {
     try {
-      await axios.delete(`https://khmiri-shop.onrender.com/api/groupproducts/${id}`, {
+      await axios.delete(`http://localhost:3000/api/groupproducts/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchProductGroups();
@@ -116,9 +116,6 @@ const AdminOrder = () => {
     }
   };
   // قبل العرض:
-if (!productGroups || !products) {
-  return <div>Loading...</div>;
-}
   return (
     <div className="admin-order">
       <Admin />

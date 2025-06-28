@@ -13,7 +13,7 @@ function Products({onAddToCart, products , darkMode}) {
 
   return (
     <div className={`projects ${darkMode ? "dark-mode" : ""}`}>
-      <div className="container mt-5">
+      <div className="container">
         <h2 className="text-center title-div">products</h2>
         <div className="row">
           {products.filter(product => product.isActive).map((product) => (

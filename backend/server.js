@@ -28,7 +28,7 @@ app.use("/api/details", routerdetails);
 const PORT = process.env.PORT || 4000;
 
 app.listen(PORT, () => {
-  console.log(`server running on ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
 
 app.get("/", (req, res) => {

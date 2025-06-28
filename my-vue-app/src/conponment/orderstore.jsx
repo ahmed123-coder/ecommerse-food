@@ -1,22 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "../style/Ordere.css";
-import Admin from "./admin";
+import "../admin/style/Ordere.css";
 
-const OrdersAdminPage = () => {
+const Orderstore = ({onClose}) => {
   const [details, setDetails] = useState();
   const [status, setStatus] = useState(null);
-  const [formdata, setFormdata] = useState({
-    idorder: "",
-    firstname: "",
-    lastname: "",
-    city: "",
-    address: "",
-    postcode: "",
-    phone: "",
-    email: "",
-    paymentMethod: "cash",
-  });
 
   const [dataorder, setDataorder] = useState({
     customer: "",
@@ -44,7 +32,7 @@ const OrdersAdminPage = () => {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:3000/api/orders", {
+      const response = await axios.get("http://localhost:3000/api/orders/in-store", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setOrders(response.data);
@@ -86,7 +74,7 @@ const OrdersAdminPage = () => {
 
   const updateorder = async (id) => {
     try {
-      await axios.put(`http://localhost:3000/api/orders/${id}`, dataorder, {
+      await axios.put(`http://localhost:3000/api/orders/${id}/in-store`, dataorder, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchOrders();
@@ -97,7 +85,7 @@ const OrdersAdminPage = () => {
 
   const updateStatus = async (id) => {
     try {
-      await axios.put(`http://localhost:3000/api/orders/${id}/delivered`, {}, {
+      await axios.put(`http://localhost:3000/api/orders/${id}/delivered/in-store`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchOrders();
@@ -105,32 +93,21 @@ const OrdersAdminPage = () => {
       alert("Error updating status");
     }
   };
-  const updateStatuscanceled = async (id) => {
-    try {
-      await axios.put(`http://localhost:3000/api/orders/${id}/canceled`);
-      fetchOrders();
-    } catch (error) {
-      alert("Error updating status");
-    }
-  };
   const updateStatuspending = async (id) => {
-    try{
-      await axios.put(`http://localhost:3000/api/orders/${id}/pending`, {}, {
+    try {
+      await axios.put(`http://localhost:3000/api/orders/${id}/pending/in-store`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchOrders();
-    }catch(err){
-      alert("Error updating status");
+    } catch (err) {
+      alert("Error updating status to pending");
     }
   };
 
   const deleteOrder = async (id) => {
     if (!window.confirm("Are you sure you want to delete this order?")) return;
     try {
-      await axios.delete(`http://localhost:3000/api/orders/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      await axios.delete(`http://localhost:3000/api/details/${id}`, {
+      await axios.delete(`http://localhost:3000/api/orders/${id}/in-store`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchOrders();
@@ -145,21 +122,9 @@ const OrdersAdminPage = () => {
       products: order.products.map((p) => ({ product: p.product._id, quantity: p.quantity })),
       productGroups: order.productGroups.map((pg) => ({ group: pg.group._id, quantity: pg.quantity })),
       paymentMethod: order.paymentMethod,
-    });
-    const response = await axios.get(`http://localhost:3000/api/orders/${order._id}/detailclient`);
-    setFormdata({
-      idorder: order._id,
-      firstname: response.data.firstname,
-      lastname: response.data.lastname,
-      city: response.data.city,
-      address: response.data.address,
-      postcode: response.data.postcode,
-      phone: response.data.phone,
-      email: response.data.email,
-      paymentMethod: response.data.paymentMethod,
+      status: order.status,
     });
     console.log("order", order);
-    console.log("formdata", response.data);
   };
 
   const handleProductChange = (index, field, value) => {
@@ -207,33 +172,12 @@ const OrdersAdminPage = () => {
       if (editorder) {
         await updateorder(editorder);
       } else {
-        const responseOrder = await axios.post("http://localhost:3000/api/orders", dataorder, {
-          headers: { "Content-Type": "application/json" },
-        });
-        const orderid = responseOrder.data._id;
-        if (!orderid) {
-          alert("Error retrieving DetailsClient ID.");
-          setLoading(false);
-          return;
-        }
-        setFormdata({ ...formdata, idorder: orderid });
-        await axios.post("http://localhost:3000/api/details", formdata, {
-          headers: { "Content-Type": "application/json" },
+        const order = await axios.post("http://localhost:3000/api/orders/in-store", dataorder, {
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         });
       }
 
       setDataorder({ customer: "", products: [], productGroups: [], paymentMethod: "cash", status: "pending" });
-      setFormdata({
-        idorder: "",
-        firstname: "",
-        lastname: "",
-        city: "",
-        address: "",
-        postcode: "",
-        phone: "",
-        email: "",
-        paymentMethod: "cash",
-      });
       setEditorder(null);
       fetchOrders();
     } catch (err) {
@@ -246,113 +190,20 @@ const OrdersAdminPage = () => {
 
   return (
     <div className="p-6">
-      <Admin />
       <h1 className="text-2xl font-bold mb-4 text-center md:text-left">Orders Management</h1>
-
-<form onSubmit={handleSubmit} className="form space-y-4 bg-white p-6 rounded-lg shadow-md">
-  {/* Form fields for client details */}
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div className="input-group">
-      <label className="block text-sm font-medium text-gray-700">First Name:</label>
-      <input
-        type="text"
-        name="firstname"
-        value={formdata.firstname}
-        onChange={handleInputChange}
-        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        required
-      />
-    </div>
-    <div className="input-group">
-      <label className="block text-sm font-medium text-gray-700">Last Name:</label>
-      <input
-        type="text"
-        name="lastname"
-        value={formdata.lastname}
-        onChange={handleInputChange}
-        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        required
-      />
-    </div>
-    <div className="input-group">
-      <label className="block text-sm font-medium text-gray-700">City:</label>
-      <input
-        type="text"
-        name="city"
-        value={formdata.city}
-        onChange={handleInputChange}
-        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        required
-      />
-    </div>
-    <div className="input-group">
-      <label className="block text-sm font-medium text-gray-700">Address:</label>
-      <input
-        type="text"
-        name="address"
-        value={formdata.address}
-        onChange={handleInputChange}
-        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        required
-      />
-    </div>
-    <div className="input-group">
-      <label className="block text-sm font-medium text-gray-700">Post Code:</label>
-      <input
-        type="text"
-        name="postcode"
-        value={formdata.postcode}
-        onChange={handleInputChange}
-        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        required
-      />
-    </div>
-    <div className="input-group">
-      <label className="block text-sm font-medium text-gray-700">Phone:</label>
-      <input
-        type="text"
-        name="phone"
-        value={formdata.phone}
-        onChange={handleInputChange}
-        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        required
-      />
-    </div>
-    <div className="input-group">
-      <label className="block text-sm font-medium text-gray-700">Email:</label>
-      <input
-        type="email"
-        name="email"
-        value={formdata.email}
-        onChange={handleInputChange}
-        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        required
-      />
-    </div>
-    <div className="input-group">
-      <label className="block text-sm font-medium text-gray-700">Payment Method:</label>
-      <select
-        name="paymentMethod"
-        value={formdata.paymentMethod}
-        onChange={handleInputChange}
-        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-        required
-      >
-        <option value="cash">Cash</option>
-        <option value="credit card">Credit Card</option>
-        <option value="paypal">PayPal</option>
-      </select>
-    </div>
-  </div>
+      <button className="btn btn-secondary mb-4" onClick={onClose}>x</button>
+      <form onSubmit={handleSubmit} className="form bg-white rounded-lg shadow-md">
+  <h2 className="text-xl font-bold mb-4 text-center">📝 Order Form</h2>
 
   {/* Customer selection */}
   <div className="input-group">
-    <label className="block text-sm font-medium text-gray-700">Customer:</label>
+    <label className="block font-medium mb-1">Customer</label>
     <select
       name="customer"
       value={dataorder.customer}
       onChange={handleInputChangeorder}
-      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+      className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+      required
     >
       <option value="">Select a customer</option>
       {users.map((user) => (
@@ -360,24 +211,32 @@ const OrdersAdminPage = () => {
           {user.firstName} {user.lastName}
         </option>
       ))}
-      <option value="Guest">
-        Guest
-      </option>
+      <option value="Guest">Guest</option>
     </select>
   </div>
 
   {/* Products section */}
   <div className="input-group">
-    <h3 className="text-lg font-medium text-gray-700">Products</h3>
+    <div className="flex items-center justify-between mb-2">
+      <h3 className="font-medium">Products</h3>
+      <button
+        type="button"
+        onClick={addProduct}
+        className="btn"
+        style={{ padding: "4px 16px", fontSize: "0.98rem" }}
+      >
+        + Add Product
+      </button>
+    </div>
     {dataorder.products.map((item, index) => (
-      <div key={index} className="flex items-center space-x-2 mt-2">
+      <div key={index} className="flex items-center gap-2 mb-2">
         <select
           value={item.product}
           onChange={(e) => handleProductChange(index, "product", e.target.value)}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           required
         >
-          <option value="">Select a product</option>
+          <option value="">Select product</option>
           {products.map((product) => (
             <option key={product._id} value={product._id}>
               {product.name}
@@ -386,41 +245,46 @@ const OrdersAdminPage = () => {
         </select>
         <input
           type="number"
+          min="1"
           value={item.quantity}
           onChange={(e) => handleProductChange(index, "quantity", e.target.value)}
-          className="mt-1 block w-20 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="w-20 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           required
         />
         <button
           type="button"
           onClick={() => removeProduct(index)}
-          className="bg-red-500 text-white px-2 py-1 rounded"
+          className="delete"
+          title="Remove"
         >
-          Remove
+          ×
         </button>
       </div>
     ))}
-    <button
-      type="button"
-      onClick={addProduct}
-      className="mt-2 bg-blue-500 text-white px-4 py-2 rounded"
-    >
-      Add Product
-    </button>
   </div>
 
   {/* Product Groups section */}
   <div className="input-group">
-    <h3 className="text-lg font-medium text-gray-700">Product Groups</h3>
+    <div className="flex items-center justify-between mb-2">
+      <h3 className="font-medium">Product Groups</h3>
+      <button
+        type="button"
+        onClick={addGroup}
+        className="btn"
+        style={{ padding: "4px 16px", fontSize: "0.98rem" }}
+      >
+        + Add Group
+      </button>
+    </div>
     {dataorder.productGroups.map((item, index) => (
-      <div key={index} className="flex items-center space-x-2 mt-2">
+      <div key={index} className="flex items-center gap-2 mb-2">
         <select
           value={item.group}
           onChange={(e) => handleGroupChange(index, "group", e.target.value)}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           required
         >
-          <option value="">Select a product group</option>
+          <option value="">Select group</option>
           {productGroups.map((group) => (
             <option key={group._id} value={group._id}>
               {group.name}
@@ -429,39 +293,72 @@ const OrdersAdminPage = () => {
         </select>
         <input
           type="number"
+          min="1"
           value={item.quantity}
           onChange={(e) => handleGroupChange(index, "quantity", e.target.value)}
-          className="mt-1 block w-20 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="w-20 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           required
         />
         <button
           type="button"
           onClick={() => removeGroup(index)}
-          className="bg-red-500 text-white px-2 py-1 rounded"
+          className="delete"
+          title="Remove"
         >
-          Remove
+          ×
         </button>
       </div>
     ))}
-    <button
-      type="button"
-      onClick={addGroup}
-      className="mt-2 bg-blue-500 text-white px-4 py-2 rounded"
-    >
-      Add Product Group
-    </button>
   </div>
 
-  {/* Submit Button */}
-  <button className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" onClick={() => setFormdata({})}>
-    cancell
-  </button>
-  <button
-    type="submit"
-    className="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-  >
-    {loading ? "Loading..." : "Submit"}
-  </button>
+  {/* Payment Method */}
+  <div className="input-group">
+    <label className="block font-medium mb-1">Payment Method</label>
+    <select
+      name="paymentMethod"
+      value={dataorder.paymentMethod}
+      onChange={handleInputChangeorder}
+      className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+      required
+    >
+      <option value="cash">Cash</option>
+      <option value="card">Card</option>
+      <option value="other">Other</option>
+    </select>
+  </div>
+
+  {/* Status */}
+  <div className="input-group">
+    <label className="block font-medium mb-1">Status</label>
+    <select
+      name="status"
+      value={dataorder.status}
+      onChange={handleInputChangeorder}
+      className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+      required
+    >
+      <option value="pending">Pending</option>
+      <option value="delivered">Delivered</option>
+    </select>
+  </div>
+
+  {/* Form Buttons */}
+  <div className="flex gap-3 mt-4">
+    <button
+      type="button"
+      className="btn-secondary w-full"
+      onClick={onClose}
+    >
+      Cancel
+    </button>
+    <button
+      type="submit"
+      className="btn w-full"
+      disabled={loading}
+    >
+      {loading ? "Loading..." : "Submit"}
+    </button>
+  </div>
 </form>
 <div className="details mt-6">
   <h2 className="text-xl font-bold mb-4">Order Details</h2>
@@ -512,9 +409,6 @@ const OrdersAdminPage = () => {
 
   {/* Filter Buttons */}
   <div className="filter-buttons">
-    <button onClick={() => setStatus("cancelled")} className="canceled">
-      Canceled
-    </button>
     <button onClick={() => setStatus("delivered")} className="completed">
       Completed
     </button>
@@ -555,11 +449,6 @@ const OrdersAdminPage = () => {
                     Mark Delivered
                   </button>
                 )}
-                {order.status !== "cancelled" && (
-                  <button onClick={() => updateStatuscanceled(order._id)} className="status">
-                    Canceled
-                  </button>
-                )}
                 {order.status !== "pending" && (
                   <button onClick={() => updateStatuspending(order._id)} className="status">
                     Pending
@@ -587,4 +476,4 @@ const OrdersAdminPage = () => {
   );
 };
 
-export default OrdersAdminPage;
+export default Orderstore;

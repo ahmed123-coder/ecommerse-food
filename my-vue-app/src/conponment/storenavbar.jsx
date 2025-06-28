@@ -33,7 +33,7 @@ const Navbar = ({
       <div className="navbar">
         {/* Logo */}
         <div className="navbar-logo">
-          <a href="/">
+          <a href="/store">
             <i className="bi bi-shop-window"></i>
           </a>
         </div>
@@ -51,13 +51,11 @@ const Navbar = ({
 
         {/* Links */}
         <nav className={`navbar-links ${isOpen ? "active" : ""}`}>
-          <a href="/"><i className="bi bi-house-door"></i> Home</a>
-          <a href="/about"><i className="bi bi-info-circle"></i> About</a>
-          <a href="/services"><i className="bi bi-gear"></i> Services</a>
-          <a href="/contact"><i className="bi bi-envelope"></i> Contact</a>
+          <a href="/store"><i className="bi bi-house-door"></i> Store</a>
           {token ? (
             <>
               <a href="/logout"><i className="bi bi-box-arrow-right"></i> Logout</a>
+              <a onClick={toggleOrderDetails}><i className="bi bi-receipt-cutoff"></i> Orders</a>
             </>
           ) : (
             <a href="/login"><i className="bi bi-person"></i> Login</a>
@@ -66,11 +64,6 @@ const Navbar = ({
 
         {/* Icons */}
         <div className="navbar-icons">
-          {token && (
-            <button onClick={toggleOrderDetails} className="icon-btn">
-              <i className="bi bi-bag-check"></i>
-            </button>
-          )}
           <button onClick={toggleCart} className="icon-btn">
             <i className="bi bi-cart"></i>
           </button>

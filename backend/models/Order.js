@@ -30,6 +30,8 @@ const OrderSchema = new Schema({
     required: true,
   },
   createdAt: { type: Date, default: Date.now },
+  queueNumber: { type: Number }, // رقم الزبون في الطابور
+  isInStore: { type: Boolean, default: false }, // هل الطلب داخلي
 });
 
 module.exports = mongoose.model("Order", OrderSchema);

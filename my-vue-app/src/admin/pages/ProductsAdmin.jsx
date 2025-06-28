@@ -25,7 +25,7 @@ const ProductsAdmin = () => {
 
   const deleteProduct = async (id) => {
     try {
-      await axios.delete(`https://khmiri-shop.onrender.com/api/products/${id}`, {
+      await axios.delete(`http://localhost:3000/api/products/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -40,7 +40,7 @@ const ProductsAdmin = () => {
   // Fetch products from the backend
   const fetchProducts = async () => {
     try {
-      const response = await axios.get("https://khmiri-shop.onrender.com/api/products");
+      const response = await axios.get("http://localhost:3000/api/products");
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -49,7 +49,7 @@ const ProductsAdmin = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get("https://khmiri-shop.onrender.com/api/categorys", {
+      const response = await axios.get("http://localhost:3000/api/categorys", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -100,7 +100,7 @@ const ProductsAdmin = () => {
     try {
       if (editProduct) {
         await axios.put(
-          `https://khmiri-shop.onrender.com/api/products/${editProduct}`,
+          `http://localhost:3000/api/products/${editProduct}`,
           data,
           {
             headers: {
@@ -111,7 +111,7 @@ const ProductsAdmin = () => {
         );
       } else {
         await axios.post(
-          "https://khmiri-shop.onrender.com/api/products",
+          "http://localhost:3000/api/products",
           data,
           {
             headers: {

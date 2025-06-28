@@ -12,6 +12,7 @@ function User() {
     lastName: "",
     email: "",
     password: "",
+    role: "customer", // Default role
   });
   const [editUser, setEditUser] = useState(null);
 
@@ -22,7 +23,7 @@ function User() {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("https://khmiri-shop.onrender.com/api/users", {
+      const response = await axios.get("http://localhost:3000/api/users", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -36,10 +37,14 @@ function User() {
 
   const addUser = async (formdata) => {
     try {
-      await axios.post("https://khmiri-shop.onrender.com/api/users", formdata);
+      await axios.post("http://localhost:3000/api/users/admin", formdata, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       fetchUsers();
       setEditUser(null);
-      setFormdata({ firstName: "", lastName: "", email: "", password: "" });
+      setFormdata({ firstName: "", lastName: "", email: "", password: "" , role: "customer" }); // Reset form data
     } catch (error) {
       console.error("Error adding user:", error);
     }
@@ -47,7 +52,7 @@ function User() {
 
   const handleDeleteUser = async (userId) => {
     try {
-      await axios.delete(`https://khmiri-shop.onrender.com/api/users/${userId}`, {
+      await axios.delete(`http://localhost:3000/api/users/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -65,19 +70,20 @@ function User() {
       lastName: user.lastName,
       email: user.email,
       password: "", // You might want to handle passwords differently
+      role: user.role,
     });
   };
 
   const updateUser = async (userId) => {
     try {
-      await axios.put(`https://khmiri-shop.onrender.com/api/users/${userId}`, formdata, {
+      await axios.put(`http://localhost:3000/api/users/${userId}`, formdata, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       fetchUsers();
       setEditUser(null);
-      setFormdata({ firstName: "", lastName: "", email: "", password: "" });
+      setFormdata({ firstName: "", lastName: "", email: "", password: "" , role: "customer" }); // Reset form data
     } catch (error) {
       console.error("Error updating user:", error);
     }
@@ -144,6 +150,17 @@ function User() {
             onChange={handleInputChange}
             required
           />
+        </div>
+        <div className="form-group">
+          <label>Role:</label>
+          <select
+            name="role"
+            value={formdata.role}
+            onChange={handleInputChange}
+          >
+            <option value="customer">Customer</option>
+            <option value="admin">Admin</option>
+          </select>
         </div>
         <div className="form-actions">
           <button type="submit" className="submit-btn">

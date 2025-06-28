@@ -10,7 +10,6 @@ function Register() {
     confirmPassword: "",
     firstName: "",
     lastName: "",
-    role: "customer",
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -27,7 +26,7 @@ function Register() {
       return;
     }
     try {
-      await axios.post("https://khmiri-shop.onrender.com/api/users", formdata);
+      await axios.post("http://localhost:3000/api/users", formdata);
       navigate("/login");
     } catch (error) {
       setError(error.response?.data?.message || "An error occurred during registration.");
