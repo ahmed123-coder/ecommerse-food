@@ -44,7 +44,7 @@ const OrdersAdminPage = () => {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:3000/api/orders", {
+      const response = await axios.get("https://khmiri-resto.onrender.com/api/orders", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setOrders(response.data);
@@ -57,7 +57,7 @@ const OrdersAdminPage = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/users", {
+      const response = await axios.get("https://khmiri-resto.onrender.com/api/users", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(response.data);
@@ -68,7 +68,7 @@ const OrdersAdminPage = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/products");
+      const response = await axios.get("https://khmiri-resto.onrender.com/api/products");
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -77,7 +77,7 @@ const OrdersAdminPage = () => {
 
   const fetchProductGroups = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/groupproducts");
+      const response = await axios.get("https://khmiri-resto.onrender.com/api/groupproducts");
       setProductGroups(response.data);
     } catch (error) {
       console.error("Error fetching product groups:", error);
@@ -86,7 +86,7 @@ const OrdersAdminPage = () => {
 
   const updateorder = async (id) => {
     try {
-      await axios.put(`http://localhost:3000/api/orders/${id}`, dataorder, {
+      await axios.put(`https://khmiri-resto.onrender.com/api/orders/${id}`, dataorder, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchOrders();
@@ -97,7 +97,7 @@ const OrdersAdminPage = () => {
 
   const updateStatus = async (id) => {
     try {
-      await axios.put(`http://localhost:3000/api/orders/${id}/delivered`, {}, {
+      await axios.put(`https://khmiri-resto.onrender.com/api/orders/${id}/delivered`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchOrders();
@@ -107,7 +107,7 @@ const OrdersAdminPage = () => {
   };
   const updateStatuscanceled = async (id) => {
     try {
-      await axios.put(`http://localhost:3000/api/orders/${id}/canceled`);
+      await axios.put(`https://khmiri-resto.onrender.com/api/orders/${id}/canceled`);
       fetchOrders();
     } catch (error) {
       alert("Error updating status");
@@ -115,7 +115,7 @@ const OrdersAdminPage = () => {
   };
   const updateStatuspending = async (id) => {
     try{
-      await axios.put(`http://localhost:3000/api/orders/${id}/pending`, {}, {
+      await axios.put(`https://khmiri-resto.onrender.com/api/orders/${id}/pending`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchOrders();
@@ -127,10 +127,10 @@ const OrdersAdminPage = () => {
   const deleteOrder = async (id) => {
     if (!window.confirm("Are you sure you want to delete this order?")) return;
     try {
-      await axios.delete(`http://localhost:3000/api/orders/${id}`, {
+      await axios.delete(`https://khmiri-resto.onrender.com/api/orders/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      await axios.delete(`http://localhost:3000/api/details/${id}`, {
+      await axios.delete(`https://khmiri-resto.onrender.com/api/details/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchOrders();
@@ -146,7 +146,7 @@ const OrdersAdminPage = () => {
       productGroups: order.productGroups.map((pg) => ({ group: pg.group._id, quantity: pg.quantity })),
       paymentMethod: order.paymentMethod,
     });
-    const response = await axios.get(`http://localhost:3000/api/orders/${order._id}/detailclient`);
+    const response = await axios.get(`https://khmiri-resto.onrender.com/api/orders/${order._id}/detailclient`);
     setFormdata({
       idorder: order._id,
       firstname: response.data.firstname,
@@ -207,7 +207,7 @@ const OrdersAdminPage = () => {
       if (editorder) {
         await updateorder(editorder);
       } else {
-        const responseOrder = await axios.post("http://localhost:3000/api/orders", dataorder, {
+        const responseOrder = await axios.post("https://khmiri-resto.onrender.com/api/orders", dataorder, {
           headers: { "Content-Type": "application/json" },
         });
         const orderid = responseOrder.data._id;
@@ -217,7 +217,7 @@ const OrdersAdminPage = () => {
           return;
         }
         setFormdata({ ...formdata, idorder: orderid });
-        await axios.post("http://localhost:3000/api/details", formdata, {
+        await axios.post("https://khmiri-resto.onrender.com/api/details", formdata, {
           headers: { "Content-Type": "application/json" },
         });
       }
