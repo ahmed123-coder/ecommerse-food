@@ -5,15 +5,11 @@ import "../style/admin.css";
 
 function Admin() {
   const [open, setOpen] = useState(true);
-    const [token , setToken] = useState(localStorage.getItem("token") || "");
 
-      useEffect(() => {
-  const storedToken = localStorage.getItem("token");
-  if (storedToken) {
-    setToken(storedToken);
-  }
-  const fetchglobal = async () => {
-    try {
+  useEffect(() => {
+    const token = localStorage.getItem("token") || "";
+    const fetchglobal = async () => {
+      try {
       const response = await axios.get("https://khmiri-resto.onrender.com/api/users/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
