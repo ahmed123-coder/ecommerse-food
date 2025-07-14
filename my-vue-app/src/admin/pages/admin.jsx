@@ -15,7 +15,7 @@ function Admin() {
   const fetchglobal = async () => {
     try {
       const response = await axios.get("https://khmiri-resto.onrender.com/api/users/me", {
-        headers: { Authorization: `Bearer ${storedToken}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
       // إذا أردت التحقق من الدور:
       if (response.data.role !== "admin") {
