@@ -25,7 +25,7 @@ function Groupstore({onAddToCart, groups, darkMode, user, printOrder }) {
 
       // إرسال الطلب إلى الخادم
       const responseOrder = await axios.post(
-        "http://localhost:3000/api/orders/in-store",
+        "https://khmiri-resto.onrender.com/api/orders/in-store",
         orderData,
         {
           headers: { "Content-Type": "application/json" },

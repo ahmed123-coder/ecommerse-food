@@ -32,7 +32,7 @@ function Store() {
   }
   const fetchuser = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/users/me", {
+      const response = await axios.get("https://khmiri-resto.onrender.com/api/users/me", {
         headers: { Authorization: `Bearer ${storedToken}` },
       });
       setUser(response.data); // التصحيح هنا
@@ -45,11 +45,11 @@ function Store() {
     }
   };
   fetchuser();
-    axios.get("http://localhost:3000/api/products").then((res) => {
+    axios.get("https://khmiri-resto.onrender.com/api/products").then((res) => {
       setProducts(res.data);
     });
 
-    axios.get("http://localhost:3000/api/groupproducts").then((res) => {
+    axios.get("https://khmiri-resto.onrender.com/api/groupproducts").then((res) => {
       setGroups(res.data);
     });
     const storedCart = JSON.parse(localStorage.getItem("guestCart")) || {

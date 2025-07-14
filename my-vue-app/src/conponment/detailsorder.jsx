@@ -11,7 +11,7 @@ function DetailsOrder({ onClose }) {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        await axios.put(`http://localhost:3000/api/orders/${orderId}/canceled`);
+        await axios.put(`https://khmiri-resto.onrender.com/api/orders/${orderId}/canceled`);
         setOrders(orders.filter((order) => order._id !== orderId));
       } catch (error) {
         console.error("Error deleting order:", error);
@@ -30,13 +30,13 @@ function DetailsOrder({ onClose }) {
     if (token) {
       const fetchUserAndOrders = async () => {
         try {
-          const userRes = await axios.get("http://localhost:3000/api/users/me", {
+          const userRes = await axios.get("https://khmiri-resto.onrender.com/api/users/me", {
             headers: { Authorization: `Bearer ${token}` },
           });
           const userData = userRes.data;
           setUser(userData);
 
-          const ordersRes = await axios.get(`http://localhost:3000/api/orders/user/${userData._id}`);
+          const ordersRes = await axios.get(`https://khmiri-resto.onrender.com/api/orders/user/${userData._id}`);
           setOrders(ordersRes.data);
         } catch (error) {
           console.error("Error fetching user data:", error);
@@ -113,7 +113,7 @@ function DetailsOrder({ onClose }) {
               {order.products.map((product) => (
                 <li key={product.product._id} className="list-group-item d-flex justify-content-between align-items-center">
                   <div>
-                    <img src={`http://localhost:3000/${product.product.image}`} alt={product.product.name} width="40" height="40" className="me-2" />
+                    <img src={`https://khmiri-resto.onrender.com/${product.product.image}`} alt={product.product.name} width="40" height="40" className="me-2" />
                     {product.product.name} - الكمية: {product.quantity}
                   </div>
                   <span>{product.product.price} دينار</span>
@@ -126,7 +126,7 @@ function DetailsOrder({ onClose }) {
               {order.productGroups.map((group) => (
                 <li key={group.group._id} className="list-group-item d-flex justify-content-between align-items-center">
                   <div>
-                    <img src={`http://localhost:3000/${group.group.image}`} alt={group.group.name} width="40" height="40" className="me-2" />
+                    <img src={`https://khmiri-resto.onrender.com/${group.group.image}`} alt={group.group.name} width="40" height="40" className="me-2" />
                     {group.group.name} - الكمية: {group.quantity}
                   </div>
                   <span>{group.group.price} دينار</span>

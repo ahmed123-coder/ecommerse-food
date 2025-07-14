@@ -32,7 +32,7 @@ const Orderstore = ({onClose}) => {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:3000/api/orders/in-store", {
+      const response = await axios.get("https://khmiri-resto.onrender.com/api/orders/in-store", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setOrders(response.data);
@@ -45,7 +45,7 @@ const Orderstore = ({onClose}) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/users", {
+      const response = await axios.get("https://khmiri-resto.onrender.com/api/users", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(response.data);
@@ -56,7 +56,7 @@ const Orderstore = ({onClose}) => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/products");
+      const response = await axios.get("https://khmiri-resto.onrender.com/api/products");
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -65,7 +65,7 @@ const Orderstore = ({onClose}) => {
 
   const fetchProductGroups = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/groupproducts");
+      const response = await axios.get("https://khmiri-resto.onrender.com/api/groupproducts");
       setProductGroups(response.data);
     } catch (error) {
       console.error("Error fetching product groups:", error);
@@ -74,7 +74,7 @@ const Orderstore = ({onClose}) => {
 
   const updateorder = async (id) => {
     try {
-      await axios.put(`http://localhost:3000/api/orders/${id}/in-store`, dataorder, {
+      await axios.put(`https://khmiri-resto.onrender.com/api/orders/${id}/in-store`, dataorder, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchOrders();
@@ -85,7 +85,7 @@ const Orderstore = ({onClose}) => {
 
   const updateStatus = async (id) => {
     try {
-      await axios.put(`http://localhost:3000/api/orders/${id}/delivered/in-store`, {}, {
+      await axios.put(`https://khmiri-resto.onrender.com/api/orders/${id}/delivered/in-store`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchOrders();
@@ -95,7 +95,7 @@ const Orderstore = ({onClose}) => {
   };
   const updateStatuspending = async (id) => {
     try {
-      await axios.put(`http://localhost:3000/api/orders/${id}/pending/in-store`, {}, {
+      await axios.put(`https://khmiri-resto.onrender.com/api/orders/${id}/pending/in-store`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchOrders();
@@ -107,7 +107,7 @@ const Orderstore = ({onClose}) => {
   const deleteOrder = async (id) => {
     if (!window.confirm("Are you sure you want to delete this order?")) return;
     try {
-      await axios.delete(`http://localhost:3000/api/orders/${id}/in-store`, {
+      await axios.delete(`https://khmiri-resto.onrender.com/api/orders/${id}/in-store`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchOrders();
@@ -172,7 +172,7 @@ const Orderstore = ({onClose}) => {
       if (editorder) {
         await updateorder(editorder);
       } else {
-        const order = await axios.post("http://localhost:3000/api/orders/in-store", dataorder, {
+        const order = await axios.post("https://khmiri-resto.onrender.com/api/orders/in-store", dataorder, {
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         });
       }

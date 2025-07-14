@@ -25,7 +25,7 @@ function CartUserSidebarstore({
     if (token) {
       const fetchUser = async () => {
         try {
-          const response = await axios.get("http://localhost:3000/api/users/me", {
+          const response = await axios.get("https://khmiri-resto.onrender.com/api/users/me", {
             headers: { Authorization: `Bearer ${token}` },
           });
           setUser(response.data);
@@ -159,7 +159,7 @@ function CartUserSidebarstore({
       }
       // إرسال الطلب إلى الخادم
       const responseOrder = await axios.post(
-        "http://localhost:3000/api/orders/in-store",
+        "https://khmiri-resto.onrender.com/api/orders/in-store",
         orderData,
         {
           headers: { "Content-Type": "application/json" },

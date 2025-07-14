@@ -15,7 +15,7 @@ function Category() {
 
     const fetchCategories = async () => {
         try {
-            const response = await axios.get("http://localhost:3000/api/categorys", {
+            const response = await axios.get("https://khmiri-resto.onrender.com/api/categorys", {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setCategories(response.data);
@@ -37,7 +37,7 @@ function Category() {
         try {
             if (editCategory) {
                 const response = await axios.put(
-                    `http://localhost:3000/api/categorys/${editCategory}`,
+                    `https://khmiri-resto.onrender.com/api/categorys/${editCategory}`,
                     formdata,
                     {
                         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
@@ -46,7 +46,7 @@ function Category() {
                 console.log("Category updated:", response.data);
             } else {
                 const response = await axios.post(
-                    "http://localhost:3000/api/categorys",
+                    "https://khmiri-resto.onrender.com/api/categorys",
                     formdata,
                     {
                         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
@@ -74,7 +74,7 @@ function Category() {
     const handleDeleteCategory = async (categoryId) => {
         try {
             const response = await axios.delete(
-                `http://localhost:3000/api/categorys/${categoryId}`,
+                `https://khmiri-resto.onrender.com/api/categorys/${categoryId}`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }

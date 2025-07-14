@@ -23,9 +23,27 @@ const ProductsAdmin = () => {
     fetchCategories();
   }, []);
 
+<<<<<<< HEAD
+=======
+  const deleteProduct = async (id) => {
+    try {
+      await axios.delete(`https://khmiri-resto.onrender.com/api/products/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      fetchProducts(); // Refresh the product list
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      alert("Failed to delete product: " + (error.response?.data?.error || error.message));
+    }
+  };
+
+  // Fetch products from the backend
+>>>>>>> 2d9fd3ba85e873116591043ff9163a503b3d6a57
   const fetchProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/products");
+      const response = await axios.get("https://khmiri-resto.onrender.com/api/products");
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -34,8 +52,15 @@ const ProductsAdmin = () => {
 
   const fetchCategories = async () => {
     try {
+<<<<<<< HEAD
       const response = await axios.get("http://localhost:3000/api/categorys", {
         headers: { Authorization: `Bearer ${token}` },
+=======
+      const response = await axios.get("https://khmiri-resto.onrender.com/api/categorys", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+>>>>>>> 2d9fd3ba85e873116591043ff9163a503b3d6a57
       });
       setCategories(response.data);
     } catch (error) {
@@ -98,7 +123,7 @@ const ProductsAdmin = () => {
     try {
       if (editProduct) {
         await axios.put(
-          `http://localhost:3000/api/products/${editProduct}`,
+          `https://khmiri-resto.onrender.com/api/products/${editProduct}`,
           data,
           {
             headers: {
@@ -109,7 +134,7 @@ const ProductsAdmin = () => {
         );
       } else {
         await axios.post(
-          "http://localhost:3000/api/products",
+          "https://khmiri-resto.onrender.com/api/products",
           data,
           {
             headers: {
