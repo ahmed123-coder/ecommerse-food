@@ -8,6 +8,10 @@ function Admin() {
 
   useEffect(() => {
     const token = localStorage.getItem("token") || "";
+    if(token === ""){
+      window.location.href = "/login";
+      return;
+    }
     const fetchglobal = async () => {
       try {
       const response = await axios.get("https://khmiri-resto.onrender.com/api/users/me", {
