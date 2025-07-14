@@ -14,7 +14,7 @@ function Admin() {
   }
   const fetchglobal = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/users/me", {
+      const response = await axios.get("https://khmiri-resto.onrender.com/api/users/me", {
         headers: { Authorization: `Bearer ${storedToken}` },
       });
       // إذا أردت التحقق من الدور:
