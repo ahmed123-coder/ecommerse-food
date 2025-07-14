@@ -23,8 +23,7 @@ const ProductsAdmin = () => {
     fetchCategories();
   }, []);
 
-<<<<<<< HEAD
-=======
+
   const deleteProduct = async (id) => {
     try {
       await axios.delete(`https://khmiri-resto.onrender.com/api/products/${id}`, {
@@ -40,7 +39,6 @@ const ProductsAdmin = () => {
   };
 
   // Fetch products from the backend
->>>>>>> 2d9fd3ba85e873116591043ff9163a503b3d6a57
   const fetchProducts = async () => {
     try {
       const response = await axios.get("https://khmiri-resto.onrender.com/api/products");
@@ -52,30 +50,14 @@ const ProductsAdmin = () => {
 
   const fetchCategories = async () => {
     try {
-<<<<<<< HEAD
-      const response = await axios.get("http://localhost:3000/api/categorys", {
-        headers: { Authorization: `Bearer ${token}` },
-=======
       const response = await axios.get("https://khmiri-resto.onrender.com/api/categorys", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
->>>>>>> 2d9fd3ba85e873116591043ff9163a503b3d6a57
       });
       setCategories(response.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
-    }
-  };
-
-  const deleteProduct = async (id) => {
-    try {
-      await axios.delete(`http://localhost:3000/api/products/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      fetchProducts();
-    } catch (error) {
-      alert("Failed to delete product: " + (error.response?.data?.error || error.message));
     }
   };
 

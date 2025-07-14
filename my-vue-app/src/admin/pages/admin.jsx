@@ -12,7 +12,7 @@ function Admin() {
   if (storedToken) {
     setToken(storedToken);
   }
-  const fetchuser = async () => {
+  const fetchglobal = async () => {
     try {
       const response = await axios.get("http://localhost:3000/api/users/me", {
         headers: { Authorization: `Bearer ${storedToken}` },
@@ -25,7 +25,7 @@ function Admin() {
       console.error("Error fetching user data:", error);
     }
   };
-  fetchuser();
+  fetchglobal();
   }, []);
 
   return (
