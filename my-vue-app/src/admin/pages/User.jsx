@@ -160,6 +160,7 @@ function User() {
           >
             <option value="customer">Customer</option>
             <option value="admin">Admin</option>
+            <option value="server">Server</option>
           </select>
         </div>
         <div className="form-actions">

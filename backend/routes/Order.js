@@ -24,12 +24,15 @@ router.post("/in-store", async (req, res) => {
       if (!product) {
         return res.status(404).json({ error: `Product with ID ${item.product} not found` });
       }
-      if (product.quantity < item.quantity) {
+      // إذا الكمية null اعتبرها غير محدودة ولا تنقصها ولا تتحقق منها
+      if (product.quantity !== null && product.quantity < item.quantity) {
         return res.status(400).json({ error: `Insufficient quantity for product ${product.name}` });
       }
       totalPrice += product.price * item.quantity;
-      product.quantity -= item.quantity;
-      await product.save();
+      if (product.quantity !== null) {
+        product.quantity -= item.quantity;
+        await product.save();
+      }
     }
 
     // التحقق من مجموعات المنتجات وتحديث الكميات
@@ -39,11 +42,14 @@ router.post("/in-store", async (req, res) => {
         return res.status(404).json({ error: `Product group with ID ${groupItem.group} not found` });
       }
       for (const item of group.products) {
-        if (item.product.quantity < item.quantity * groupItem.quantity) {
+        // إذا الكمية null اعتبرها غير محدودة ولا تنقصها ولا تتحقق منها
+        if (item.product.quantity !== null && item.product.quantity < item.quantity * groupItem.quantity) {
           return res.status(400).json({ error: `Insufficient quantity for product ${item.product.name} in group ${group.name}` });
         }
-        item.product.quantity -= item.quantity * groupItem.quantity;
-        await item.product.save();
+        if (item.product.quantity !== null) {
+          item.product.quantity -= item.quantity * groupItem.quantity;
+          await item.product.save();
+        }
       }
       totalPrice += group.price * groupItem.quantity;
     }
@@ -94,12 +100,15 @@ router.post("/", async (req, res) => {
       if (!product) {
         return res.status(404).json({ error: `Product with ID ${item.product} not found` });
       }
-      if (product.quantity < item.quantity) {
+      // إذا الكمية null اعتبرها غير محدودة ولا تنقصها ولا تتحقق منها
+      if (product.quantity !== null && product.quantity < item.quantity) {
         return res.status(400).json({ error: `Insufficient quantity for product ${product.name}` });
       }
       totalPrice += product.price * item.quantity;
-      product.quantity -= item.quantity;
-      await product.save();
+      if (product.quantity !== null) {
+        product.quantity -= item.quantity;
+        await product.save();
+      }
     }
 
     // التحقق من مجموعات المنتجات وتحديث الكميات
@@ -109,14 +118,18 @@ router.post("/", async (req, res) => {
         return res.status(404).json({ error: `Product group with ID ${groupItem.group} not found` });
       }
       for (const item of group.products) {
-        if (item.product.quantity < item.quantity * groupItem.quantity) {
+        // إذا الكمية null اعتبرها غير محدودة ولا تنقصها ولا تتحقق منها
+        if (item.product.quantity !== null && item.product.quantity < item.quantity * groupItem.quantity) {
           return res.status(400).json({ error: `Insufficient quantity for product ${item.product.name} in group ${group.name}` });
         }
-        item.product.quantity -= item.quantity * groupItem.quantity;
-        await item.product.save();
+        if (item.product.quantity !== null) {
+          item.product.quantity -= item.quantity * groupItem.quantity;
+          await item.product.save();
+        }
       }
       totalPrice += group.price * groupItem.quantity;
     }
+
     const order = new Order({
       customer,
       products,

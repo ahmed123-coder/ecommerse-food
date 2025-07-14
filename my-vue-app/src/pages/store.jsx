@@ -37,7 +37,7 @@ function Store() {
       });
       setUser(response.data); // التصحيح هنا
       // إذا أردت التحقق من الدور:
-      if (response.data.role !== "admin") {
+      if (response.data.role === "customer") {
         window.location.href = "/login";
       }
     } catch (error) {

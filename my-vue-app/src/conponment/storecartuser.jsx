@@ -136,7 +136,7 @@ function CartUserSidebarstore({
         products: [],
         productGroups: [],
         paymentMethod: "cash",
-        status: "pending",
+        status: "delivered",
       };
 
       if (productId) {

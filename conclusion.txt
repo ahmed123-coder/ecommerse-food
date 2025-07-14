@@ -1,0 +1,8 @@
+{
+    "email": "stocgestion@gmail.com",
+    "password": "stock gestion",
+    "confirmPassword": "stock gestion",
+    "firstName": "stock",
+    "lastName": "gestion",
+    "role": "admin"
+  }

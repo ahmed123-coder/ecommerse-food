@@ -1,9 +1,32 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import "../style/admin.css";
 
 function Admin() {
   const [open, setOpen] = useState(true);
+    const [token , setToken] = useState(localStorage.getItem("token") || "");
+
+      useEffect(() => {
+  const storedToken = localStorage.getItem("token");
+  if (storedToken) {
+    setToken(storedToken);
+  }
+  const fetchuser = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/users/me", {
+        headers: { Authorization: `Bearer ${storedToken}` },
+      });
+      // إذا أردت التحقق من الدور:
+      if (response.data.role !== "admin") {
+        window.location.href = "/login";
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+  fetchuser();
+  }, []);
 
   return (
     <>

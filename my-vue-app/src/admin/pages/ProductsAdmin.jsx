@@ -6,7 +6,7 @@ import Admin from "./admin";
 const ProductsAdmin = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  const [token] = useState(localStorage.getItem("token") || "");
   const [editProduct, setEditProduct] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -14,30 +14,15 @@ const ProductsAdmin = () => {
     price: "",
     category: "",
     quantity: "",
+    isUnlimited: false,
     image: null,
   });
 
-  // Fetch all products and categories on component mount
   useEffect(() => {
     fetchProducts();
     fetchCategories();
   }, []);
 
-  const deleteProduct = async (id) => {
-    try {
-      await axios.delete(`http://localhost:3000/api/products/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      fetchProducts(); // Refresh the product list
-    } catch (error) {
-      console.error("Error deleting product:", error);
-      alert("Failed to delete product: " + (error.response?.data?.error || error.message));
-    }
-  };
-
-  // Fetch products from the backend
   const fetchProducts = async () => {
     try {
       const response = await axios.get("http://localhost:3000/api/products");
@@ -50,9 +35,7 @@ const ProductsAdmin = () => {
   const fetchCategories = async () => {
     try {
       const response = await axios.get("http://localhost:3000/api/categorys", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       setCategories(response.data);
     } catch (error) {
@@ -60,13 +43,30 @@ const ProductsAdmin = () => {
     }
   };
 
-  // Handle form input changes
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  const deleteProduct = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/api/products/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchProducts();
+    } catch (error) {
+      alert("Failed to delete product: " + (error.response?.data?.error || error.message));
+    }
   };
 
-  // Handle file input change
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    if (name === "isUnlimited") {
+      setFormData({
+        ...formData,
+        isUnlimited: checked,
+        quantity: checked ? "" : formData.quantity,
+      });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+  };
+
   const handleFileChange = (e) => {
     setFormData({ ...formData, image: e.target.files[0] });
   };
@@ -77,8 +77,9 @@ const ProductsAdmin = () => {
       name: product.name,
       description: product.description,
       price: product.price.toString(),
-      category: product.category._id,
-      quantity: product.quantity.toString(),
+      category: product.category._id || product.category,
+      quantity: product.quantity === null ? "" : product.quantity.toString(),
+      isUnlimited: product.quantity === null,
       image: null,
     });
   };
@@ -86,16 +87,13 @@ const ProductsAdmin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = new FormData();
-
     data.append("name", formData.name);
     data.append("description", formData.description);
     data.append("price", formData.price);
     data.append("category", formData.category);
-    data.append("quantity", formData.quantity);
-
-    if (formData.image) {
-      data.append("image", formData.image);
-    }
+    // إذا كان غير محدود quantity أرسل ""
+    data.append("quantity", formData.isUnlimited ? "" : formData.quantity);
+    if (formData.image) data.append("image", formData.image);
 
     try {
       if (editProduct) {
@@ -121,21 +119,19 @@ const ProductsAdmin = () => {
           }
         );
       }
-
       setFormData({
         name: "",
         description: "",
         price: "",
         category: "",
         quantity: "",
+        isUnlimited: false,
         image: null,
       });
       setEditProduct(null);
       fetchProducts();
     } catch (error) {
-      console.error("Error submitting product:", error);
       let errorMessage = "An unexpected error occurred";
-      
       if (error.response) {
         if (typeof error.response.data === "string") {
           errorMessage = "Server error: Please check your data";
@@ -145,7 +141,6 @@ const ProductsAdmin = () => {
       } else if (error.message) {
         errorMessage = error.message;
       }
-      
       alert("Error: " + errorMessage);
     }
   };
@@ -205,20 +200,34 @@ const ProductsAdmin = () => {
         </div>
         <div className="form-group">
           <label>Quantity:</label>
-          <input
-            type="number"
-            name="quantity"
-            value={formData.quantity}
-            onChange={handleInputChange}
-            required
-            min="0"
-          />
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <input
+              type="number"
+              name="quantity"
+              value={formData.isUnlimited ? "" : formData.quantity}
+              onChange={handleInputChange}
+              min="0"
+              disabled={formData.isUnlimited}
+              placeholder="Enter quantity"
+              style={{ width: "120px" }}
+              required={!formData.isUnlimited}
+            />
+            <label style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+              <input
+                type="checkbox"
+                name="isUnlimited"
+                checked={formData.isUnlimited}
+                onChange={handleInputChange}
+              />
+              غير محدود
+            </label>
+          </div>
         </div>
         <div className="form-group">
           <label>Image:</label>
-          <input 
-            type="file" 
-            name="image" 
+          <input
+            type="file"
+            name="image"
             onChange={handleFileChange}
             accept="image/*"
           />
@@ -227,8 +236,8 @@ const ProductsAdmin = () => {
           {editProduct ? "Update Product" : "Add Product"}
         </button>
         {editProduct && (
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="cancel-btn"
             onClick={() => {
               setEditProduct(null);
@@ -238,6 +247,7 @@ const ProductsAdmin = () => {
                 price: "",
                 category: "",
                 quantity: "",
+                isUnlimited: false,
                 image: null,
               });
             }}
@@ -250,7 +260,7 @@ const ProductsAdmin = () => {
       <h2>Product List</h2>
       <div className="row">
         {products.filter(product => product.isActive).map((product) => (
-          <div key={product._id} className="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mb-4">
+          <div key={product._id} className="col-lg-3 col-md-6 col-sm-6 mb-4">
             <img
               src={product.image}
               alt={product.name}
@@ -260,16 +270,21 @@ const ProductsAdmin = () => {
               <h3>{product.name}</h3>
               <p>{product.description}</p>
               <p>Price: ${product.price}</p>
-              <p>Quantity: {product.quantity}</p>
+              <p>
+                Quantity:{" "}
+                {product.quantity === null || product.quantity === undefined
+                  ? "غير محدود"
+                  : product.quantity}
+              </p>
               <div className="product-actions">
-                <button 
-                  className="edit-btn" 
+                <button
+                  className="edit-btn"
                   onClick={() => handleEdit(product)}
                 >
                   Edit
                 </button>
-                <button 
-                  className="delete-btn" 
+                <button
+                  className="delete-btn"
                   onClick={() => deleteProduct(product._id)}
                 >
                   Delete
@@ -278,7 +293,7 @@ const ProductsAdmin = () => {
             </div>
           </div>
         ))}
-    </div>
+      </div>
     </div>
   );
 };

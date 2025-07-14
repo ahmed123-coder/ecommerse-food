@@ -23,8 +23,7 @@ const storage = new CloudinaryStorage({
 });
 
 const upload = multer({ storage });
-// ✅ إضافة منتج
-// ✅ إضافة منتج
+// ✅ إضافة منتج (يدعم الكمية غير المحدودة)
 router.post("/", upload.single("image"), async (req, res) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
@@ -40,7 +39,21 @@ router.post("/", upload.single("image"), async (req, res) => {
 
     if (!image) return res.status(400).json({ error: "Image is required" });
 
-    const newProduct = new Product({ name, description, price, category, quantity, image, isActive });
+    // دعم الكمية غير المحدودة: إذا كانت الكمية فارغة أو -1 أو null اعتبرها غير محدودة
+    const finalQuantity =
+      quantity === "" || quantity === undefined || quantity === null || quantity === "-1" || quantity === -1
+        ? null
+        : Number(quantity);
+
+    const newProduct = new Product({
+      name,
+      description,
+      price,
+      category,
+      quantity: finalQuantity,
+      image,
+      isActive,
+    });
     await newProduct.save();
     res.status(201).json(newProduct);
   } catch (error) {
@@ -59,7 +72,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// ✅ تعديل منتج
+// ✅ تعديل منتج (يدعم الكمية غير المحدودة)
 router.put("/:id", upload.single("image"), async (req, res) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
@@ -87,7 +100,13 @@ router.put("/:id", upload.single("image"), async (req, res) => {
     if (description) product.description = description;
     if (price) product.price = price;
     if (category) product.category = category;
-    if (quantity) product.quantity = quantity;
+    // دعم الكمية غير المحدودة
+    if (typeof quantity !== "undefined") {
+      product.quantity =
+        quantity === "" || quantity === undefined || quantity === null || quantity === "-1" || quantity === -1
+          ? null
+          : Number(quantity);
+    }
     if (typeof isActive !== "undefined") product.isActive = isActive;
     if (image) product.image = image;
 
@@ -95,7 +114,7 @@ router.put("/:id", upload.single("image"), async (req, res) => {
     res.status(200).json(product);
   } catch (error) {
     console.error("❌ Error in PUT /products:", error);
-    res.status(500).json({ error: error.message }); // إرجاع JSON دائماً
+    res.status(500).json({ error: error.message });
   }
 });
 

@@ -8,10 +8,11 @@ const productSchema = new mongoose.Schema({
         ref: "Category",
         required: true,
     },
-    quantity: {
+        quantity: {
         type: Number,
-        required: true,
         min: 0,
+        required: false, // اجعلها غير مطلوبة
+        default: null    // null = غير محدود
     },
     image: {
         type: String,
